@@ -1,0 +1,55 @@
+// backend/usecase/user_usecase.go
+
+package usecase
+
+import (
+	"training-app/backend/domain/models"
+	"training-app/backend/domain/repositories"
+
+	"golang.org/x/crypto/bcrypt"
+)
+
+type UserUsecase struct {
+	UserRepo repositories.UserRepository
+}
+
+func NewUserUsecase(repo repositories.UserRepository) *UserUsecase {
+	return &UserUsecase{
+		UserRepo: repo,
+	}
+}
+
+func (u *UserUsecase) RegisterUser(user *models.User) error {
+	// パスワードのハッシュ化
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+	user.Password = string(hashedPassword)
+
+	return u.UserRepo.CreateUser(user)
+}
+
+func (u *UserUsecase) GetUser(id int) (*models.User, error) {
+	return u.UserRepo.GetUserByID(id)
+}
+
+func (u *UserUsecase) UpdateUser(user *models.User) error {
+	if user.Password != "" {
+		// パスワードが更新されている場合はハッシュ化
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+		if err != nil {
+			return err
+		}
+		user.Password = string(hashedPassword)
+	}
+	return u.UserRepo.UpdateUser(user)
+}
+
+func (u *UserUsecase) DeleteUser(id int) error {
+	return u.UserRepo.DeleteUser(id)
+}
+
+func (u *UserUsecase) FetchAllUsers() ([]models.User, error) {
+	return u.UserRepo.GetAllUsers()
+}

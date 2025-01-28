@@ -1,0 +1,9 @@
+# .gitignore ファイル内容
+
+# バックエンドの.envファイルを無視
+/backend/.env
+
+# その他の一般的な無視ファイル
+node_modules/
+dist/
+*.log
