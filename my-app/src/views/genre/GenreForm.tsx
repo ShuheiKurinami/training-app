@@ -1,6 +1,6 @@
 // src/views/genre/GenreForm.tsx
 import React, { useState } from 'react';
-import { GenreModel } from '../../models/GenreModel';
+// import { GenreModel } from '../../models/GenreModel';
 import { useGenreViewModel } from '../../viewmodels/GenreViewModel';
 import { createGenre } from '../../services/GenreService';
 
