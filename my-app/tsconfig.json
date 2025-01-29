@@ -1,26 +1,30 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "target": "ESNext",                   // 最新のJavaScriptをターゲットに変更
+    "lib": ["DOM", "DOM.Iterable", "ESNext"], // 必要なライブラリ
+    "types": ["@testing-library/react", "jest"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "strict": true,
+    "strict": true,                      // 厳格な型チェックを有効
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
-    "moduleResolution": "node",
+    "module": "ESNext",                  // ESNext モジュールを使用
+    "moduleResolution": "Node",          // Node.js のモジュール解決
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",                  // React JSX をサポート
+    "baseUrl": "./src",                  // エイリアスの基準ディレクトリ
+    "paths": {                           // エイリアス設定
+      "@models/*": ["models/*"],
+      "@viewmodels/*": ["viewmodels/*"],
+      "@views/*": ["views/*"],
+      "@services/*": ["services/*"],
+      "@utils/*": ["utils/*"]
+    }
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"],                     // src ディレクトリ以下を含む
+  "exclude": ["node_modules"]             // node_modules は除外
 }
