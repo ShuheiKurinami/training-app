@@ -3,8 +3,8 @@
 package usecase
 
 import (
-	"training-app/backend/domain/models"
-	"training-app/backend/domain/repositories"
+	"github.com/ShuheiKurinami/training-app/backend/domain/models"
+	"github.com/ShuheiKurinami/training-app/backend/domain/repositories"
 
 	"golang.org/x/crypto/bcrypt"
 )

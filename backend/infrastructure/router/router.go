@@ -3,7 +3,7 @@
 package router
 
 import (
-	"training-app/backend/interface/controllers"
+	"github.com/ShuheiKurinami/training-app/backend/interface/controllers"
 
 	"github.com/gorilla/mux"
 )

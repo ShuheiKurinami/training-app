@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"training-app/backend/domain/models"
-	"training-app/backend/usecase"
+	"github.com/ShuheiKurinami/training-app/backend/domain/models"
+	"github.com/ShuheiKurinami/training-app/backend/usecase"
 
 	"github.com/gorilla/mux"
 )

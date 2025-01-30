@@ -1,5 +1,3 @@
-// backend/cmd/main.go
-
 package main
 
 import (
@@ -8,18 +6,17 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
-	"training-app/backend/config"
-	"training-app/backend/infrastructure/db"
-	"training-app/backend/infrastructure/router"
-	"training-app/backend/interface/controllers"
-	"training-app/backend/interface/repositories"
-	"training-app/backend/usecase"
 
-	"github.com/gorilla/mux"
+	"github.com/ShuheiKurinami/training-app/backend/config"
+	"github.com/ShuheiKurinami/training-app/backend/infrastructure/db"
+	"github.com/ShuheiKurinami/training-app/backend/infrastructure/router"
+	"github.com/ShuheiKurinami/training-app/backend/interface/controllers"
+	"github.com/ShuheiKurinami/training-app/backend/interface/repositories"
+	"github.com/ShuheiKurinami/training-app/backend/usecase"
 )
 
 func main() {
-	// .env ファイルの読み込み
+	// .env の読み込み
 	err := godotenv.Load()
 	if err != nil {
 		log.Println("No .env file found")
@@ -29,7 +26,8 @@ func main() {
 	config.LoadEnv()
 
 	// データベース接続の初期化
-	db.Init()
+	db.Init() // ← エラーハンドリングを削除
+	log.Println("Database connected successfully")
 
 	// リポジトリの作成
 	userRepo := repositories.NewPostgresUserRepository()

@@ -3,17 +3,16 @@
 package repositories
 
 import (
-	"math"
-	"strconv"
-	"training-app/backend/domain/models"
-	"training-app/backend/infrastructure/db"
-
+	"database/sql" 
+	"github.com/ShuheiKurinami/training-app/backend/domain/models"
+	"github.com/ShuheiKurinami/training-app/backend/infrastructure/db"
+	"github.com/ShuheiKurinami/training-app/backend/domain/repositories"
 	"github.com/pkg/errors"
 )
 
 type PostgresUserRepository struct{}
 
-func NewPostgresUserRepository() UserRepository {
+func NewPostgresUserRepository() repositories.UserRepository {
 	return &PostgresUserRepository{}
 }
 
@@ -105,7 +104,7 @@ func (r *PostgresUserRepository) GetAllUsers() ([]models.User, error) {
 	return allUsers, nil
 }
 
-func (r *PostgresUserRepository) getUsersFromDB(dbConn *db.DBConnection.DB) ([]models.User, error) {
+func (r *PostgresUserRepository) getUsersFromDB(dbConn *sql.DB) ([]models.User, error) {
 	query := `SELECT id, username, email FROM users`
 	rows, err := dbConn.Query(query)
 	if err != nil {

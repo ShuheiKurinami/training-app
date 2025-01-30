@@ -2,7 +2,7 @@
 
 package repositories
 
-import "training-app/backend/domain/models"
+import "github.com/ShuheiKurinami/training-app/backend/domain/models"
 
 type UserRepository interface {
 	CreateUser(user *models.User) error
