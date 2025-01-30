@@ -13,7 +13,12 @@ const UserForm: React.FC = () => {
         e.preventDefault();
         try {
             const newUser = await createUser({ name, email });
-            addUser(newUser);
+            console.log("API response:", newUser); // ここでレスポンスを確認
+            if (newUser && typeof newUser === "object" && "id" in newUser) {
+                addUser(newUser);
+            } else {
+                console.error("Invalid user data:", newUser);
+            }
             setName('');
             setEmail('');
         } catch (error) {
