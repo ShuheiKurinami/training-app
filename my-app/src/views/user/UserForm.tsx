@@ -12,7 +12,7 @@ const UserForm: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const newUser = await createUser({ name, email });
+            const newUser = await createUser({ username: name, email });
             console.log("API response:", newUser); // ここでレスポンスを確認
             if (newUser && typeof newUser === "object" && "id" in newUser) {
                 addUser(newUser);
