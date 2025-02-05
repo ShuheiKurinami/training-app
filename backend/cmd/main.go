@@ -38,8 +38,13 @@ func main() {
 	// コントローラの作成
 	userController := controllers.NewUserController(userUC)
 
+	// 認証関連のリポジトリ & ユースケース & コントローラを作成
+	authRepo := repositories.NewPostgresAuthRepository() // ✅ 修正
+	authUC := usecase.NewAuthUsecase(authRepo)          // ✅ 修正
+	authController := controllers.NewAuthController(authUC) // ✅ 修正
+
 	// ルーターの設定
-	r := router.SetupRoutes(userController)
+	r := router.SetupRoutes(userController, authController)
 
 	// サーバー起動
 	port := getPort()

@@ -1,16 +1,13 @@
-// backend/interface/controllers/user_controller.go
-
 package controllers
 
 import (
-	"encoding/json"
 	"net/http"
 	"strconv"
 
 	"github.com/ShuheiKurinami/training-app/backend/domain/models"
 	"github.com/ShuheiKurinami/training-app/backend/usecase"
 
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
 )
 
 type UserController struct {
@@ -23,99 +20,92 @@ func NewUserController(uc *usecase.UserUsecase) *UserController {
 	}
 }
 
-func (c *UserController) CreateUser(w http.ResponseWriter, r *http.Request) {
+// ユーザー作成
+func (c *UserController) CreateUser(ctx *gin.Context) {
 	var user models.User
-	err := json.NewDecoder(r.Body).Decode(&user)
-	if err != nil {
-		http.Error(w, "Invalid request payload", http.StatusBadRequest)
+	if err := ctx.ShouldBindJSON(&user); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
 		return
 	}
 
-	err = c.UserUC.RegisterUser(&user)
-	if err != nil {
-		http.Error(w, "Failed to create user", http.StatusInternalServerError)
+	if err := c.UserUC.RegisterUser(&user); err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
 		return
 	}
 
 	// パスワードを含めない
 	user.Password = ""
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(user)
+	ctx.JSON(http.StatusCreated, user)
 }
 
-func (c *UserController) GetUser(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	idStr := vars["id"]
+// ユーザー取得
+func (c *UserController) GetUser(ctx *gin.Context) {
+	idStr := ctx.Param("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		http.Error(w, "Invalid user ID", http.StatusBadRequest)
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
 		return
 	}
 
 	user, err := c.UserUC.GetUser(id)
 	if err != nil {
-		http.Error(w, "User not found", http.StatusNotFound)
+		ctx.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
 		return
 	}
 
 	// パスワードを含めない
 	user.Password = ""
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(user)
+	ctx.JSON(http.StatusOK, user)
 }
 
-func (c *UserController) UpdateUser(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	idStr := vars["id"]
+// ユーザー更新
+func (c *UserController) UpdateUser(ctx *gin.Context) {
+	idStr := ctx.Param("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		http.Error(w, "Invalid user ID", http.StatusBadRequest)
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
 		return
 	}
 
 	var user models.User
-	err = json.NewDecoder(r.Body).Decode(&user)
-	if err != nil {
-		http.Error(w, "Invalid request payload", http.StatusBadRequest)
+	if err := ctx.ShouldBindJSON(&user); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
 		return
 	}
 	user.ID = id
 
-	err = c.UserUC.UpdateUser(&user)
-	if err != nil {
-		http.Error(w, "Failed to update user", http.StatusInternalServerError)
+	if err := c.UserUC.UpdateUser(&user); err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update user"})
 		return
 	}
 
 	// パスワードを含めない
 	user.Password = ""
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(user)
+	ctx.JSON(http.StatusOK, user)
 }
 
-func (c *UserController) DeleteUser(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	idStr := vars["id"]
+// ユーザー削除
+func (c *UserController) DeleteUser(ctx *gin.Context) {
+	idStr := ctx.Param("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		http.Error(w, "Invalid user ID", http.StatusBadRequest)
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
 		return
 	}
 
-	err = c.UserUC.DeleteUser(id)
-	if err != nil {
-		http.Error(w, "Failed to delete user", http.StatusInternalServerError)
+	if err := c.UserUC.DeleteUser(id); err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete user"})
 		return
 	}
 
-	w.WriteHeader(http.StatusNoContent)
+	ctx.Status(http.StatusNoContent)
 }
 
-func (c *UserController) GetAllUsers(w http.ResponseWriter, r *http.Request) {
+// 全ユーザー取得
+func (c *UserController) GetAllUsers(ctx *gin.Context) {
 	users, err := c.UserUC.FetchAllUsers()
 	if err != nil {
-		http.Error(w, "Failed to fetch users", http.StatusInternalServerError)
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch users"})
 		return
 	}
 
@@ -124,6 +114,5 @@ func (c *UserController) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 		users[i].Password = ""
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(users)
+	ctx.JSON(http.StatusOK, users)
 }
