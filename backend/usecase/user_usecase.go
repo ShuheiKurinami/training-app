@@ -5,6 +5,7 @@ package usecase
 import (
 	"github.com/ShuheiKurinami/training-app/backend/domain/models"
 	"github.com/ShuheiKurinami/training-app/backend/domain/repositories"
+	"github.com/ShuheiKurinami/training-app/backend/infrastructure/security"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -52,4 +53,12 @@ func (u *UserUsecase) DeleteUser(id int) error {
 
 func (u *UserUsecase) FetchAllUsers() ([]models.User, error) {
 	return u.UserRepo.GetAllUsers()
+}
+
+func (u *UserUsecase) ChangePassword(id int, newPassword string) error {
+	hashed, err := security.HashPassword(newPassword)
+	if err != nil {
+		return err
+	}
+	return u.UserRepo.UpdateUserPassword(id, hashed)
 }

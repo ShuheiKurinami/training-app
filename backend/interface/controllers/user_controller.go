@@ -116,3 +116,31 @@ func (c *UserController) GetAllUsers(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, users)
 }
+
+func (uc *UserController) UpdatePassword(ctx *gin.Context) {
+	// URLからユーザーID取得
+	idStr := ctx.Param("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		return
+	}
+
+	// JSONからパスワードを取得
+	var input struct {
+		NewPassword string `json:"new_password"`
+	}
+	if err := ctx.ShouldBindJSON(&input); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
+		return
+	}
+
+	// パスワード変更処理
+	err = uc.UserUC.ChangePassword(id, input.NewPassword)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update password"})
+		return
+	}
+
+	ctx.Status(http.StatusOK)
+}

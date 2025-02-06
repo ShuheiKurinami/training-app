@@ -10,4 +10,5 @@ type UserRepository interface {
 	UpdateUser(user *models.User) error
 	DeleteUser(id int) error
 	GetAllUsers() ([]models.User, error)
+	UpdateUserPassword(id int, hashedPw string) error
 }

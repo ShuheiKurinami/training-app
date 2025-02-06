@@ -123,3 +123,20 @@ func (r *PostgresUserRepository) getUsersFromDB(dbConn *sql.DB) ([]models.User, 
 	}
 	return users, nil
 }
+
+func (r *PostgresUserRepository) UpdateUserPassword(id int, hashedPw string) error {
+    dbConn := r.getDBConnection(id)
+    query := `UPDATE users SET password=$1 WHERE id=$2`
+    res, err := dbConn.DB.Exec(query, hashedPw, id)
+    if err != nil {
+        return errors.Wrap(err, "failed to update password")
+    }
+    rowsAffected, err := res.RowsAffected()
+    if err != nil {
+        return errors.Wrap(err, "failed to get rows affected")
+    }
+    if rowsAffected == 0 {
+        return errors.New("no user found to update password")
+    }
+    return nil
+}
