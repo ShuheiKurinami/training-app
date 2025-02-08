@@ -22,3 +22,7 @@ export const updateUser = async (id: number, user: Omit<UserModel, 'id'>): Promi
 export const deleteUser = async (id: number): Promise<void> => {
     await apiClient.delete(`/users/${id}`);
 };
+
+export const changeUserPassword = async (id: number, newPassword: string): Promise<void> => {
+    await apiClient.put(`/users/${id}/password`, { password: newPassword });
+};

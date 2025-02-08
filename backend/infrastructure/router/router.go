@@ -26,7 +26,7 @@ func SetupRoutes(userController *controllers.UserController, authController *con
 	router.PUT("/api/users/:id", userController.UpdateUser)
 	router.DELETE("/api/users/:id", userController.DeleteUser)
 	router.GET("/api/users", userController.GetAllUsers)
-	router.PUT("/users/{id}/password", userController.UpdatePassword)
+	router.PUT("/api/users/:id/password", userController.UpdatePassword)
 
 	// 認証関連のルート
 	router.POST("/api/auth/login", authController.Login)
